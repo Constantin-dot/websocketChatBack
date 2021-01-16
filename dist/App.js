@@ -4,7 +4,15 @@ const io = require('socket.io')(http);
 app.get('/', (req, res) => {
     res.send('<h1>Hello world</h1>');
 });
-io.on('connection', (socket) => {
+const messages = [
+    { message: "Hello", id: "23423", user: { id: "dfsfsd", name: "Dimych" } },
+    { message: "Hi", id: "45345", user: { id: "asfda", name: "Vicktor" } }
+];
+io.on('connection', (socketChannel) => {
+    socketChannel.on('client-message-sent', (message) => {
+        console.log(message);
+    });
+    socketChannel.emit("init-messages-published", messages);
     console.log('a user connected');
 });
 const PORT = process.env.PORT || 3009;
