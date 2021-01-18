@@ -8,18 +8,28 @@ app.use(cors({
 app.get('/', (req, res) => {
     res.send('<h1>Hello world</h1>');
 });
-const messages = [
-    { message: "Hello", id: "23423", user: { id: "dfsfsd", name: "Dimych" } },
-    { message: "Hi", id: "45345", user: { id: "asfda", name: "Vicktor" } }
-];
+const messages = [];
+const usersState = new Map();
 io.on('connection', (socketChannel) => {
+    usersState.set(socketChannel, { id: new Date().getTime().toString(), name: "anonymous" });
+    io.on('disconnect', () => {
+        usersState.delete(socketChannel);
+    });
+    socketChannel.on('client-name-sent', (name) => {
+        if (typeof name !== "string") {
+            return;
+        }
+        const user = usersState.get(socketChannel);
+        user.name = name;
+    });
     socketChannel.on('client-message-sent', (message) => {
         if (typeof message !== "string") {
             return;
         }
+        const user = usersState.get(socketChannel);
         let messageItem = {
             message: message, id: "12345" + new Date().getTime(),
-            user: { id: "dfsfsd", name: "Dimych" }
+            user: { id: user.id, name: user.name }
         };
         messages.push(messageItem);
         io.emit('new-message-sent', messageItem);
