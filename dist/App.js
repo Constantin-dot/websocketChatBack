@@ -14,9 +14,14 @@ const messages = [
 ];
 io.on('connection', (socketChannel) => {
     socketChannel.on('client-message-sent', (message) => {
-        console.log(message);
+        let messageItem = {
+            message: message, id: "12345" + new Date().getTime(),
+            user: { id: "dfsfsd", name: "Dimych" }
+        };
+        messages.push(messageItem);
+        io.emit('new-message-sent', messageItem);
     });
-    socketChannel.emit("init-messages-published", messages);
+    socketChannel.emit('init-messages-published', messages);
     console.log('a user connected');
 });
 const PORT = process.env.PORT || 3009;
