@@ -14,6 +14,9 @@ const messages = [
 ];
 io.on('connection', (socketChannel) => {
     socketChannel.on('client-message-sent', (message) => {
+        if (typeof message !== "string") {
+            return;
+        }
         let messageItem = {
             message: message, id: "12345" + new Date().getTime(),
             user: { id: "dfsfsd", name: "Dimych" }
