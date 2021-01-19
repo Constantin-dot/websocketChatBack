@@ -22,6 +22,9 @@ io.on('connection', (socketChannel) => {
         const user = usersState.get(socketChannel);
         user.name = name;
     });
+    socketChannel.on('client-typed', () => {
+        io.emit('user-is-typing', usersState.get(socketChannel));
+    });
     socketChannel.on('client-message-sent', (message) => {
         if (typeof message !== "string") {
             return;
