@@ -39,6 +39,9 @@ io.on('connection', (socketChannel) => {
         io.emit('new-message-sent', messageItem);
         successFn(null);
     });
+    socketChannel.on('client-deleted-all-messages', () => {
+        messages.length = 0;
+    });
     socketChannel.emit('init-messages-published', messages, (data) => {
         console.log('Init messages received:' + data);
     });

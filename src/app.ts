@@ -52,6 +52,10 @@ io.on('connection', (socketChannel) => {
         successFn(null)
     })
 
+    socketChannel.on('client-deleted-all-messages', () => {
+        messages.length = 0
+    })
+
     socketChannel.emit('init-messages-published', messages, (data: string) => {
         console.log('Init messages received:' + data)
     })
