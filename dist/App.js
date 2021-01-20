@@ -23,10 +23,11 @@ io.on('connection', (socketChannel) => {
         user.name = name;
     });
     socketChannel.on('client-typed', () => {
-        io.emit('user-is-typing', usersState.get(socketChannel));
+        socketChannel.broadcast.emit('user-is-typing', usersState.get(socketChannel));
     });
-    socketChannel.on('client-message-sent', (message) => {
-        if (typeof message !== "string") {
+    socketChannel.on('client-message-sent', (message, successFn) => {
+        if (typeof message !== "string" || message.length > 20) {
+            successFn("Message length should be less than 20 chars");
             return;
         }
         const user = usersState.get(socketChannel);
@@ -36,8 +37,11 @@ io.on('connection', (socketChannel) => {
         };
         messages.push(messageItem);
         io.emit('new-message-sent', messageItem);
+        successFn(null);
     });
-    socketChannel.emit('init-messages-published', messages);
+    socketChannel.emit('init-messages-published', messages, (data) => {
+        console.log('Init messages received:' + data);
+    });
     console.log('a user connected');
 });
 const PORT = process.env.PORT || 3009;
