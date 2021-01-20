@@ -35,7 +35,7 @@ io.on('connection', (socketChannel) => {
     })
 
     socketChannel.on('client-message-sent', (message: string, successFn: Function) => {
-        if (typeof message !== "string" || message.length > 20) {
+        if (typeof message !== "string" || message.length > 300) {
             successFn("Message length should be less than 20 chars")
             return
         }

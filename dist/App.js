@@ -26,7 +26,7 @@ io.on('connection', (socketChannel) => {
         socketChannel.broadcast.emit('user-is-typing', usersState.get(socketChannel));
     });
     socketChannel.on('client-message-sent', (message, successFn) => {
-        if (typeof message !== "string" || message.length > 20) {
+        if (typeof message !== "string" || message.length > 300) {
             successFn("Message length should be less than 20 chars");
             return;
         }
